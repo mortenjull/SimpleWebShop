@@ -21,5 +21,10 @@ namespace SimpleWebShop.Domain.Entities
         /// Name of the <see cref="Product"/>.
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Inventory.
+        /// </summary>
+        public InventoryProduct Inventory { get; set; }
     }
 }

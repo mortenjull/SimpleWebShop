@@ -5,6 +5,7 @@ using System.Text;
 namespace SimpleWebShop.Domain.Entities
 {
     public class InventoryProduct
+        : Entity
     {
         /// <summary>
         /// Amount of the <see cref="Product"/>.
