@@ -1,11 +1,13 @@
-﻿using System;
+﻿using SimpleWebShop.Domain.Entities;
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace SimpleWebShop.Domain.UnitOfWorks
 {
     public class ExpSpecification<TEntity>
-        : Specification<TEntity>, IExpSpecification<TEntity> where TEntity : IEntity
+        : Specification<TEntity>, IExpSpecification<TEntity> where TEntity : Entity
     {
         public ExpSpecification(Expression<Func<TEntity, bool>> criteria)
             : base()
