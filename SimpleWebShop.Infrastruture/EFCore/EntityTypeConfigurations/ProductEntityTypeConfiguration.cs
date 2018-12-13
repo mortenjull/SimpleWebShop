@@ -16,6 +16,9 @@ namespace SimpleWebShop.Infrastruture.EFCore.EntityTypeConfigurations
 
             // One to many relationship with color.
             builder.HasOne(x => x.Color).WithMany(x => x.Products);
+
+            // Stanard information.
+            builder.HasData(new Product() { Id = 1, ColorId = 1, Name = "Product" });
         }
     }
 }

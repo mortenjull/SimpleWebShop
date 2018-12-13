@@ -16,6 +16,9 @@ namespace SimpleWebShop.Infrastruture.EFCore.EntityTypeConfigurations
 
             // One to one relationship between Product and inventory.
             builder.HasOne(x => x.Product).WithOne(x => x.Inventory);
+
+            // Standard information.
+            builder.HasData(new InventoryProduct() { Id = 1, ProductId = 1, Amount = 20, Price = 20.0 });
         }
     }
 }
