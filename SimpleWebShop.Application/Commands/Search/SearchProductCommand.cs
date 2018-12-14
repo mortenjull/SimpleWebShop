@@ -3,6 +3,7 @@ using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Domain.UnitOfWorks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,14 +47,19 @@ namespace SimpleWebShop.Application.Commands.Search
             SearchProductCommand request, 
             CancellationToken cancellationToken)
         {
-            var all = await _unitOfWork.Repository.All<Product>(cancellationToken);
+            // Colors to sort with.
+            List<int> colors = request.Colors;
+
+            // If no colors are selected get all colors and use them in search.
+            if (colors == null || colors.Any())
+                colors = (await _unitOfWork.Repository.All<Color>(cancellationToken)).Select(x => x.Id).ToList();
 
             // Create filter expression for finding products which is
             // valid under the given criteria.
             var expressionSpecification = new ExpSpecification<Product>(x =>
                 x.Inventory.Price > request.MinPrice &&
                 x.Inventory.Price < request.MaxPrice &&
-                request.Colors.Contains(x.ColorId));
+                colors.Contains(x.ColorId));
 
             // What to include.
             expressionSpecification.Include(x => x.Inventory);

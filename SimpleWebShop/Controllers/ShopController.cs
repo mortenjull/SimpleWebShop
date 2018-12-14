@@ -28,24 +28,24 @@ namespace SimpleWebShop.Controllers
         {
             var defaultMinPrice = 0;
             var defaultMaxPrice = 10000;
-            var defaultColors = new List<int>() { 1 };
 
             var command = new SearchProductCommand(
                  defaultMinPrice,
                  defaultMaxPrice,
-                 defaultColors);
+                 null);
 
             var result = await _mediator.Send(command);
 
             var viewModel = new ShopSearchViewModel()
             {
-                Colors = defaultColors,
+                Colors = null,
                 MaxPrice = defaultMaxPrice,
                 MinPice = defaultMinPrice,
                 Products = result.Select(x => new ShopSearchProductViewModel()
                 {
                     Name = x.Name,
-                    Price = x.Inventory.Price
+                    Price = x.Inventory.Price,
+                    Picture = x.Picture
                 })
             };
 
@@ -69,7 +69,8 @@ namespace SimpleWebShop.Controllers
                 Products = result.Select(x => new ShopSearchProductViewModel()
                 {
                     Name = x.Name,
-                    Price = x.Inventory.Price
+                    Price = x.Inventory.Price,
+                    Picture = x.Picture
                 })
             };
 

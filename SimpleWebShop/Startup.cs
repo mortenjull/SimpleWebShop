@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bogus;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,29 +54,40 @@ namespace SimpleWebShop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+
+
+                List<Color> colors = new List<Color>()
+                {
+                    new Color() { Name = "Blue" }, new Color() { Name = "Red" }, new Color() { Name = "Green" }
+                };
+
+                List<string> pictures = new List<string>()
+                {
+                    "product-1.jpg", "product-2.jpg", "product-3.jpg", "product-4.jpg"
+                };
+
+                var productFakter = new Faker<Product>()
+                    .RuleFor(p => p.Color, f => f.PickRandom(colors))
+                    .RuleFor(p => p.Name, f => f.Commerce.ProductName())
+                    .RuleFor(p => p.Picture, f => f.PickRandom(pictures));
+                
+                var inventoryProductFaker = new Faker<InventoryProduct>()
+                    .RuleFor(i => i.Amount, f => f.Random.Int(0, 500))
+                    .RuleFor(i => i.Price, f => f.Random.Double(0, 10000))
+                    .RuleFor(i => i.Product, f => productFakter.Generate());
+                
+                
+                dbContext.Set<InventoryProduct>().AddRange(inventoryProductFaker.Generate(500));
+
+                dbContext.SaveChanges();
+            }
+
             if (env.IsDevelopment())
             {
-                using (var serviceScope =
-                    app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-
-                    dbContext.Set<InventoryProduct>().Add(new InventoryProduct()
-                    {
-                        Amount = 20,
-                        Price = 20,
-                        Product = new Product()
-                        {
-                            Name = "Test",
-                            Color = new Color()
-                            {
-                                Name = "Name"
-                            }
-                        }
-                    });
-
-                    dbContext.SaveChanges();
-                }
+                
 
                 app.UseDeveloperExceptionPage();
             }
