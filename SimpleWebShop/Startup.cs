@@ -61,7 +61,7 @@ namespace SimpleWebShop
 
                 List<Color> colors = new List<Color>()
                 {
-                    new Color() { Name = "Blue" }, new Color() { Name = "Red" }, new Color() { Name = "Green" }
+                    new Color() { Name = "Blue", Hex = "#4286f4" }, new Color() { Name = "Red", Hex = "#ef3d21" }, new Color() { Name = "Green", Hex = "#2bef20" }
                 };
 
                 List<string> pictures = new List<string>()

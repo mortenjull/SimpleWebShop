@@ -26,21 +26,32 @@ namespace SimpleWebShop.Controllers
 
         public async Task<IActionResult> Index()
         {
+            // Default price and max price.
             var defaultMinPrice = 0;
             var defaultMaxPrice = 10000;
 
+            // Get all the default colors to show on the page.
+            var defaultColors = await _mediator.Send(new SearchProductAllColorsCommand());
+            
+            // Create command for getting all products.
             var command = new SearchProductCommand(
                  defaultMinPrice,
                  defaultMaxPrice,
-                 null);
+                 defaultColors.Select(x => x.Id).ToList());
 
+            // Execute and search for produts.
             var result = await _mediator.Send(command);
 
+            // Prepare view model for display.
             var viewModel = new ShopSearchViewModel()
             {
-                Colors = null,
+                DefaultColors = defaultColors.ToList(),
+                DefaultMinPrice = defaultMinPrice,
+                DefaultMaxPrice = defaultMaxPrice,
+
+                Colors = defaultColors.Select(x => x.Id).ToList(),
                 MaxPrice = defaultMaxPrice,
-                MinPice = defaultMinPrice,
+                MinPrice = defaultMinPrice,
                 Products = result.Select(x => new ShopSearchProductViewModel()
                 {
                     Name = x.Name,
@@ -52,10 +63,18 @@ namespace SimpleWebShop.Controllers
             return View("Index", viewModel);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Search(ShopSearchModel model)
         {
+            // Default price and max price.
+            var defaultMinPrice = 0;
+            var defaultMaxPrice = 10000;
+
+            // Get all the default colors to show on the page.
+            var defaultColors = await _mediator.Send(new SearchProductAllColorsCommand());
+
             var command = new SearchProductCommand(
-                model.MinPice,
+                model.MinPrice,
                 model.MaxPrice,
                 model.Colors);
 
@@ -63,9 +82,13 @@ namespace SimpleWebShop.Controllers
 
             var viewModel = new ShopSearchViewModel()
             {
+                DefaultColors = defaultColors.ToList(),
+                DefaultMinPrice = defaultMinPrice,
+                DefaultMaxPrice = defaultMaxPrice,
+
                 Colors = model.Colors,
                 MaxPrice = model.MaxPrice,
-                MinPice = model.MinPice,
+                MinPrice = model.MinPrice,
                 Products = result.Select(x => new ShopSearchProductViewModel()
                 {
                     Name = x.Name,

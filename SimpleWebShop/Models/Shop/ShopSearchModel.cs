@@ -10,7 +10,7 @@ namespace SimpleWebShop.Models.Shop
         /// <summary>
         /// Minimum price for search.
         /// </summary>
-        public double MinPice { get; set; }
+        public double MinPrice { get; set; }
 
         /// <summary>
         /// Maximum price for search.
