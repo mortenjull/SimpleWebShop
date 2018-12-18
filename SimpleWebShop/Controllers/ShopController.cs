@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SimpleWebShop.Application.Commands.Cart;
 using SimpleWebShop.Application.Commands.Search;
+using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Models.Shop;
 
 namespace SimpleWebShop.Controllers
@@ -75,6 +77,26 @@ namespace SimpleWebShop.Controllers
             };
 
             return View("Index", viewModel);
+        }
+
+        public async Task<IActionResult> BuyProducts(List<int> productIds)
+        {
+            if(!productIds.Any())
+                return new BadRequestObjectResult("You must chose some items to perchause");
+
+            var checkInventoryCommand = new CheckInventoryCommand(productIds);
+            var inventoryResult = this._mediator.Send(checkInventoryCommand).Result;
+
+            if(inventoryResult == null || !inventoryResult.Succes)
+                return new BadRequestObjectResult("Some items wher out of stock");
+
+            var buycommand = new BuyProductsCommand((List<InventoryProduct>) inventoryResult.Payload);
+            var perchauseResult = this._mediator.Send(buycommand).Result;
+
+            if (!perchauseResult)
+                return new BadRequestObjectResult("Something went wrong");
+
+            return new OkObjectResult("Yai");
         }
     }
 }
