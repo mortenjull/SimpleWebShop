@@ -36,7 +36,7 @@ namespace SimpleWebShop.Models.Shop
 
         public double Price { get; set; }
 
-        public int Color { get; set; }
+        public string Color { get; set; }
 
         public string Picture { get; set; }
     }

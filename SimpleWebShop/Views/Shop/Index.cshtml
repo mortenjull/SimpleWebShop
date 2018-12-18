@@ -5,7 +5,7 @@
 }
 
 <!-- ##### Breadcumb Area Start ##### -->
-<div class="breadcumb_area bg-img" style="background-image: url(images/bg-img/breadcumb.jpg);">
+<div class="breadcumb_area bg-img" style="background-image: url(/images/bg-img/breadcumb.jpg);">
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12">
@@ -24,7 +24,7 @@
             <div class="col-12 col-md-4 col-lg-3">
                 <div class="shop_sidebar_area">
 
-                    <form method="post" action="/shop/search">
+                    <form method="get" action="/shop/search">
                         <!-- ##### Single Widget ##### -->
                         <div class="widget price mb-50">
                             <!-- Widget Title -->
@@ -34,17 +34,17 @@
 
                             <div class="widget-desc">
                                 <div class="slider-range">
-                                    <div data-min="@Model.MinPrice" data-max="@Model.MaxPrice" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="@Model.MinPrice" data-value-max="@Model.MaxPrice" data-label-result="Range:" data-min-input="#rangeMin" data-max-input="#rangeMax">
+                                    <div data-min="@Model.DefaultMinPrice" data-max="@Model.DefaultMaxPrice" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="@Model.MinPrice" data-value-max="@Model.MaxPrice" data-label-result="Range:" data-min-input="#rangeMin" data-max-input="#rangeMax">
                                         <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
                                         <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                         <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                     </div>
-                                    <div class="range-price">Range: $49.00 - $360.00</div>
+                                    <div class="range-price">Range: $ @Model.MinPrice - $ @Model.MaxPrice</div>
                                 </div>
                             </div>
 
-                            <input type="number" value="@Model.MinPrice" id="rangeMin" name="MinPrice" style="display:none;"/>
-                            <input type="number" value="@Model.MaxPrice" id="rangeMax" name="MaxPrice" style="display:none;"/>
+                            <input type="number" value="@Model.MinPrice" id="rangeMin" name="MinPrice" style="display:none;" />
+                            <input type="number" value="@Model.MaxPrice" id="rangeMax" name="MaxPrice" style="display:none;" />
                         </div>
 
                         <!-- ##### Single Widget ##### -->
@@ -58,13 +58,23 @@
                                         var color = Model.DefaultColors[i];
                                         var selected = Model.Colors.Any(x => x == color.Id);
 
-                                        <li><input type="checkbox" name="Colors[@i]" checked="@selected" value="@color.Id" /><a href="#" class="color1" style="background-color: @color.Hex;"></a></li>
+                                        <li><input type="checkbox" name="Colors" checked="@selected" value="@color.Id" /><a href="#" class="color1" style="background-color: @color.Hex;"></a></li>
                                     }
                                 </ul>
                             </div>
                         </div>
 
-                        <button class="btn essence-btn">Apply filter</button>
+                        <div class="product-sorting d-flex">
+                            <p style="color: black;font-weight: 600;font-size:12px;">Sort by:</p>
+                            <div style="margin-top: -10px;margin-left:10px;">
+                                <select name="sortBy" id="sortByselect">
+                                    <option value="2" selected="@(Model.SortBy == SimpleWebShop.Models.Shop.ShopSearchModel.Sorting.Highest)">Price: $$ - $</option>
+                                    <option value="1" selected="@(Model.SortBy == SimpleWebShop.Models.Shop.ShopSearchModel.Sorting.Lowest)">Price: $ - $$</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn essence-btn" style="margin-top:30px;">Apply filter</button>
                     </form>
 
                 </div>
@@ -77,21 +87,9 @@
                             <div class="product-topbar d-flex align-items-center justify-content-between">
                                 <!-- Total Products -->
                                 <div class="total-products">
-                                    <p><span>186</span> products found</p>
+                                    <p><span>@Model.Products.Count()</span> products found</p>
                                 </div>
                                 <!-- Sorting -->
-                                <div class="product-sorting d-flex">
-                                    <p>Sort by:</p>
-                                    <form action="#" method="get">
-                                        <select name="select" id="sortByselect">
-                                            <option value="value">Highest Rated</option>
-                                            <option value="value">Newest</option>
-                                            <option value="value">Price: $$ - $</option>
-                                            <option value="value">Price: $ - $$</option>
-                                        </select>
-                                        <input type="submit" class="d-none" value="">
-                                    </form>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -147,15 +145,7 @@
                 </div>
                 <!-- Pagination -->
                 <nav aria-label="navigation">
-                    <ul class="pagination mt-50 mb-70">
-                        <li class="page-item"><a class="page-link" href="#"><i class="fa fa-angle-left"></i></a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">21</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a></li>
-                    </ul>
+                    
                 </nav>
             </div>
         </div>
