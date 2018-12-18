@@ -99,6 +99,8 @@
         var value_min = jQuery(this).data('value-min');
         var value_max = jQuery(this).data('value-max');
         var label_result = jQuery(this).data('label-result');
+        var min_input = jQuery(this).data('min-input');
+        var max_input = jQuery(this).data('max-input');
         var t = $(this);
         $(this).slider({
             range: true,
@@ -109,6 +111,9 @@
                 var result = label_result + " " + unit + ui.values[0] + ' - ' + unit + ui.values[1];
                 console.log(t);
                 t.closest('.slider-range').find('.range-price').html(result);
+
+                $(min_input).val(ui.values[0]);
+                $(max_input).val(ui.values[1]);
             }
         });
     });

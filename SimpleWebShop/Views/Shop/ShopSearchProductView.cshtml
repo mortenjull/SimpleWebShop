@@ -8,27 +8,26 @@
     <div class="single-product-wrapper">
         <!-- Product Image -->
         <div class="product-img">
-            <img src="~/images/product-img/product-1.jpg" alt="">
+            <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
             <!-- Hover Thumb -->
-            <img class="hover-img" src="~/images/product-img/product-2.jpg" alt="">
+            <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
 
             <!-- Product Badge -->
-            <div class="product-badge offer-badge">
+            @*<div class="product-badge offer-badge">
                 <span>-30%</span>
-            </div>
+            </div>*@
             <!-- Favourite -->
             <div class="product-favourite">
-                <a href="#" class="favme fa fa-heart"></a>
+                @*<a href="#" class="favme fa fa-heart"></a>*@
+                <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color;"></a>
             </div>
         </div>
 
         <!-- Product Description -->
         <div class="product-description">
-            <span>topshop</span>
-            <a href="single-product-details.html">
-                <h6>Knot Front Mini Dress</h6>
-            </a>
-            <p class="product-price"><span class="old-price">$75.00</span> $55.00</p>
+            <span>SimpleWebShop</span>
+                <h6>@Model.Name - @Model.Color</h6>
+            <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
 
             <!-- Hover Content -->
             <div class="hover-content">
