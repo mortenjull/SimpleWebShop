@@ -159,4 +159,18 @@
             $("#priceRange").change(function () { $("#priceRangeText").text("Range: $ " + $("#priceRange").val() + "-$ @Model.MaxPrice"); });
         });
     </script>
+    
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $(".productForm").submit(function(e) {
+                e.preventDefault();
+                console.log("Added");
+                var id = jQuery("[name='productId']", this).val();
+                var price = jQuery("[name='productPrice']", this).val();
+                var picture = jQuery("[name='productPicture']", this).val();
+                
+            });
+        });
+    </script>
 }

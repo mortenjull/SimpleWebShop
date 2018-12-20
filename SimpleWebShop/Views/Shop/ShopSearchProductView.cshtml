@@ -5,37 +5,43 @@
 
 <!-- Single Product -->
 <div class="col-12 col-sm-6 col-lg-4">
-    <div class="single-product-wrapper">
-        <!-- Product Image -->
-        <div class="product-img">
-            <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
-            <!-- Hover Thumb -->
-            <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
+    <form action="#" method="post" class="productForm">
+        <div class="single-product-wrapper">
+            <!-- Product Image -->
+            <div class="product-img">
+                <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
+                <!-- Hover Thumb -->
+                <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
 
-            <!-- Product Badge -->
-            @*<div class="product-badge offer-badge">
-                <span>-30%</span>
-            </div>*@
-            <!-- Favourite -->
-            <div class="product-favourite">
-                @*<a href="#" class="favme fa fa-heart"></a>*@
-                <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color;"></a>
+                <!-- Product Badge -->
+                @*<div class="product-badge offer-badge">
+                    <span>-30%</span>
+                </div>*@
+                <!-- Favourite -->
+                <div class="product-favourite">
+                    @*<a href="#" class="favme fa fa-heart"></a>*@
+                    <a href="#" class="" style="opacity: 1; visibility: visible; background-color: @Model.Color;"></a>
+                </div>
             </div>
-        </div>
 
-        <!-- Product Description -->
-        <div class="product-description">
-            <span>SimpleWebShop</span>
+            <!-- Product Description -->
+            <div class="product-description">
+                <span>SimpleWebShop</span>
                 <h6>@Model.Name - @Model.Color</h6>
-            <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
+                <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
 
-            <!-- Hover Content -->
-            <div class="hover-content">
-                <!-- Add to Cart -->
-                <div class="add-to-cart-btn">
-                    <a href="#" class="btn essence-btn">Add to Cart</a>
+                <!-- Hover Content -->
+                <div class="hover-content">
+                    <!-- Add to Cart -->
+                    <div class="add-to-cart-btn">
+                        <input type="hidden" class="productId" name="productId" value="@Model.Id" />
+                        <input type="hidden" class="productPrice" name="productPrice" value="@Model.Price" />
+                        <input type="hidden" class="productPicture" name="productPicture" value="@Model.Picture" />
+                        <input type="submit" class="btn essence-btn" value="Add to Cart" />
+                        <!--<a href="#" class="btn essence-btn">Add to Cart</a>-->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
