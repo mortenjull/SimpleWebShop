@@ -13,6 +13,11 @@ namespace SimpleWebShop.Domain.Entities
         public string Name { get; set; }
 
         /// <summary>
+        /// Hex value color.
+        /// </summary>
+        public string Hex { get; set; }
+
+        /// <summary>
         /// List of <see cref="Product"/>.
         /// </summary>
         public List<Product> Products { get; set; }

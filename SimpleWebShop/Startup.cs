@@ -58,10 +58,12 @@ namespace SimpleWebShop
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
 
+                var maxPrice = double.Parse(Configuration["Default:MaxPrice"]);
+                var minPrice = double.Parse(Configuration["Default:MinPrice"]);
 
                 List<Color> colors = new List<Color>()
                 {
-                    new Color() { Name = "Blue" }, new Color() { Name = "Red" }, new Color() { Name = "Green" }
+                    new Color() { Name = "Blue", Hex = "#4286f4" }, new Color() { Name = "Red", Hex = "#ef3d21" }, new Color() { Name = "Green", Hex = "#2bef20" }
                 };
 
                 List<string> pictures = new List<string>()
@@ -76,7 +78,7 @@ namespace SimpleWebShop
                 
                 var inventoryProductFaker = new Faker<InventoryProduct>()
                     .RuleFor(i => i.Amount, f => f.Random.Int(0, 500))
-                    .RuleFor(i => i.Price, f => f.Random.Double(0, 10000))
+                    .RuleFor(i => i.Price, f => f.Random.Double(minPrice, maxPrice))
                     .RuleFor(i => i.Product, f => productFakter.Generate());
                 
                 

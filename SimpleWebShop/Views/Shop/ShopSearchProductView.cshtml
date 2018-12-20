@@ -8,9 +8,9 @@
     <div class="single-product-wrapper">
         <!-- Product Image -->
         <div class="product-img">
-            <img src="@string.Format("images/product-img/{0}", Model.Picture)" alt="">
+            <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
             <!-- Hover Thumb -->
-            <img class="hover-img" src="@string.Format("images/product-img/{0}", Model.Picture)" alt="">
+            <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
 
             <!-- Product Badge -->
             @*<div class="product-badge offer-badge">
@@ -18,14 +18,15 @@
             </div>*@
             <!-- Favourite -->
             <div class="product-favourite">
-                <a href="#" class="favme fa fa-heart"></a>
+                @*<a href="#" class="favme fa fa-heart"></a>*@
+                <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color;"></a>
             </div>
         </div>
 
         <!-- Product Description -->
         <div class="product-description">
             <span>SimpleWebShop</span>
-                <h6>@Model.Name</h6>
+                <h6>@Model.Name - @Model.Color</h6>
             <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
 
             <!-- Hover Content -->

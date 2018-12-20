@@ -51,7 +51,7 @@ namespace SimpleWebShop.Application.Commands.Search
             List<int> colors = request.Colors;
 
             // If no colors are selected get all colors and use them in search.
-            if (colors == null || colors.Any())
+            if (colors == null || !colors.Any())
                 colors = (await _unitOfWork.Repository.All<Color>(cancellationToken)).Select(x => x.Id).ToList();
 
             // Create filter expression for finding products which is
@@ -63,6 +63,7 @@ namespace SimpleWebShop.Application.Commands.Search
 
             // What to include.
             expressionSpecification.Include(x => x.Inventory);
+            expressionSpecification.Include(x => x.Color);
 
             // Execute search for products.
             var result = await _unitOfWork.Repository
