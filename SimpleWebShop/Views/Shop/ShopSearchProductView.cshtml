@@ -28,6 +28,7 @@
             <span>SimpleWebShop</span>
                 <h6>@Model.Name - @Model.Color</h6>
             <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
+            <input type="hidden" value="@Math.Round(Model.Price, 2)" data-cy="search-product-price"/>
 
             <!-- Hover Content -->
             <div class="hover-content">
