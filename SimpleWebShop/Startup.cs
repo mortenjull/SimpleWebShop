@@ -82,7 +82,7 @@ namespace SimpleWebShop
                     .RuleFor(i => i.Product, f => productFakter.Generate());
                 
                 
-                dbContext.Set<InventoryProduct>().AddRange(inventoryProductFaker.Generate(500));
+                dbContext.Set<InventoryProduct>().AddRange(inventoryProductFaker.Generate(20));
 
                 dbContext.SaveChanges();
             }

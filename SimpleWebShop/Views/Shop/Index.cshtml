@@ -58,7 +58,7 @@
                                         var color = Model.DefaultColors[i];
                                         var selected = Model.Colors.Any(x => x == color.Id);
 
-                                        <li><input type="checkbox" name="Colors" checked="@selected" value="@color.Id" /><a href="#" class="color1" style="background-color: @color.Hex;"></a></li>
+                                        <li><input type="checkbox" name="Colors" checked="@selected" value="@color.Id" data-cy="search-color"/><a href="#" class="color1" style="background-color: @color.Hex;"></a></li>
                                     }
                                 </ul>
                             </div>
@@ -67,7 +67,7 @@
                         <div class="product-sorting d-flex">
                             <p style="color: black;font-weight: 600;font-size:12px;">Sort by:</p>
                             <div style="margin-top: -10px;margin-left:10px;">
-                                <select name="sortBy" id="sortByselect">
+                                <select name="sortBy" id="sortByselect" data-cy="search-sortby">
                                     <option value="2" selected="@(Model.SortBy == SimpleWebShop.Models.Shop.ShopSearchModel.Sorting.Highest)">Price: $$ - $</option>
                                     <option value="1" selected="@(Model.SortBy == SimpleWebShop.Models.Shop.ShopSearchModel.Sorting.Lowest)">Price: $ - $$</option>
                                 </select>
