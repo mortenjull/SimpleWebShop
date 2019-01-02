@@ -26,22 +26,26 @@ namespace SimpleWebShop.UnitTest
         [ClassData(typeof(TestSearchDataGenerator))]
         public void TestCase2_Theory_True(double minPrice, double maxPrice, List<int> colors)
         {
-            var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
-            CancellationToken token = new CancellationToken();
-
             Mock<IUnitOfWork> mockUnitOfWork = new Mock<IUnitOfWork>();
             Mock<IRepository> mockRepository = new Mock<IRepository>();
 
-            mockRepository.Setup(x => x.All<Color>(token)).Returns(new FakeSearchCommandRepository().GetAll);
+            CancellationToken token = new CancellationToken();
+            var expressionSpecification = new ExpSpecification<Product>(x => true );
+
+            mockRepository.Setup(x => x.All<Color>(token))
+                .Returns(new FakeSearchCommandRepository().GetAllColors());
+
+            mockRepository.Setup(x => x.Where<Product>(expressionSpecification, token))
+                .Returns(new FakeSearchCommandRepository().GetAllProducts());
+
             mockUnitOfWork.Setup(x => x.Repository).Returns(mockRepository.Object);
 
-            var searchProductHandler = new SearchProductCommandHandler(mockUnitOfWork.Object);
+            var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
 
+            var searchProductHandler = new SearchProductCommandHandler(mockUnitOfWork.Object);
             var list = searchProductHandler.Handle(searchProduct, token).Result;
 
-            Assert.NotEmpty(list);
-
-            Assert.True(false);
+            Assert.NotNull(list);
         }
     }
 }

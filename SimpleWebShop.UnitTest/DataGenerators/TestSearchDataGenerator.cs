@@ -10,6 +10,7 @@ namespace SimpleWebShop.UnitTest.DataGenerators
   
         private readonly List<object[]> _data = new List<object[]>
         {
+            new object[] { 0.0, 10000.0, new List<int>(){} },
             new object[] { 0.0, 10000.0, new List<int>(){ 1, 2 , 3 } },
             new object[] { 0.0, 10000.0, new List<int>(){ 1 } },
             new object[] { 0.0, 10000.0, new List<int>(){ 1, 2 } },
