@@ -13,10 +13,7 @@ namespace SimpleWebShop.Application.Commands.Cart
     public class BuyProductsCommand : IRequest<bool>
     {
         public BuyProductsCommand(List<InventoryProduct> inventoryProducts)
-        {
-            if(!inventoryProducts.Any())
-                throw new ArgumentOutOfRangeException(nameof(inventoryProducts));
-
+        {            
             this.InventoryProducts = inventoryProducts;
         }
 
@@ -36,6 +33,11 @@ namespace SimpleWebShop.Application.Commands.Cart
         }
         public async Task<bool> Handle(BuyProductsCommand request, CancellationToken cancellationToken)
         {
+            if(request.InventoryProducts == null)
+                throw new ArgumentNullException(nameof(request.InventoryProducts));
+            if(!request.InventoryProducts.Any())
+                throw new ArgumentOutOfRangeException(nameof(request));
+
             try
             {
                 foreach (var inventoryProduct in request.InventoryProducts)

@@ -48,7 +48,7 @@ namespace SimpleWebShop.Application.Commands.Cart
                 int amount = 1;
                 if (!productAndAmount.TryGetValue(id, out amount))
                 {
-                    productAndAmount.Add(id, amount);
+                    productAndAmount.Add(id, 1);
                 }
                 else
                 {
