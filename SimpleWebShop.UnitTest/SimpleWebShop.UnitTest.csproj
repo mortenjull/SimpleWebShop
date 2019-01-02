@@ -16,4 +16,8 @@
     <Folder Include="Fake\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleWebShop.Application\SimpleWebShop.Application.csproj" />
+  </ItemGroup>
+
 </Project>
