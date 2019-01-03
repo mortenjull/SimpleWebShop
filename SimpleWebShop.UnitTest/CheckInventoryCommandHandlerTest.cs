@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Domain.UnitOfWorks;
 using SimpleWebShop.Domain.UnitOfWorks.Repositories;
 using SimpleWebShop.Infrastruture.EFCore;
+using SimpleWebShop.Infrastruture.UnitOfWorks;
 using SimpleWebShop.Infrastruture.UnitOfWorks.Repositories;
 using Xunit;
 
@@ -21,12 +23,8 @@ namespace SimpleWebShop.UnitTest
         private readonly Mock<IRepository> _inventoryProductRepo;
 
         public CheckInventoryCommandHandlerTest()
-        {
-            _inventoryProductRepo = new Mock<IRepository>();
-
-            _unitOfwork = new Mock<IUnitOfWork>();
-            this._unitOfwork.Setup(mock => mock.Repository).Returns(new Repository(new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>())));
-
+        {                      
+            _unitOfwork = new Mock<IUnitOfWork>();          
         }
         [Fact]
         public void ThrowArgumentNullException_UnitOfWorkIsNull()
@@ -56,69 +54,92 @@ namespace SimpleWebShop.UnitTest
 
         [Fact]
         public void ReturnNull_NullReturFromDB()
-        {
-            var command = new CheckInventoryCommand(new List<int>(){1,2,3});    
+        {          
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ReturnNull_NullReturFromDB")
+                .Options;
 
-            var handler = new CheckInventoryCommandHandler(this._unitOfwork.Object);
+            using (var context = new ApplicationDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
 
-            this._unitOfwork.Setup(mock =>
-                mock.Repository.FirstOrDefault<InventoryProduct>(i => i.Id == -1, new CancellationToken()));
-                      
-            Assert.Null(handler.Handle(command, new CancellationToken()).Result);
+                var command = new CheckInventoryCommand(new List<int>() { 1, 2, 3 });
+
+                var handler = new CheckInventoryCommandHandler(unitOfWork);
+                
+                Assert.Null(handler.Handle(command, new CancellationToken()).Result);
+            }           
         }
 
         [Fact]
-        public void ReturnTrue_AllProductsWasInStock()
-        {
-            var command = new CheckInventoryCommand(new List<int>() { 1});
+        public async void ReturnTrue_AllProductsWasInStock()
+        {                                 
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ReturnTrue_AllProductsWasInStock")
+                .Options;
 
-            var handler = new CheckInventoryCommandHandler(this._unitOfwork.Object);
+            using (var context = new ApplicationDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+                unitOfWork.Repository.Add(new InventoryProduct() {Amount = 5, Id = 1, ProductId = 1, Price = 10.0});
 
-            this._unitOfwork.Setup(mock =>
-                mock.Repository.FirstOrDefault<InventoryProduct>(x => x.ProductId == It.IsAny<int>(), new CancellationToken()))
-                .Returns(Task.FromResult(new InventoryProduct() { Amount = 5, Id = 1, ProductId = 1, Price = 10.0 }));
+                await unitOfWork.SaveChanges();
 
-            
+                var command = new CheckInventoryCommand(new List<int>() { 1 });
 
+                var handler = new CheckInventoryCommandHandler(unitOfWork);
 
-            var result = handler.Handle(command, new CancellationToken()).Result;
-            Assert.True(result.Succes);
+                var result = handler.Handle(command, new CancellationToken()).Result;
+                Assert.True(result.Succes);
+            }            
         }
 
         [Fact]
-        public void ReturnFalse_NotAllProductsWasInStock()
-        {
-            var command = new CheckInventoryCommand(new List<int>() { 1, 2 });
-
-            var handler = new CheckInventoryCommandHandler(this._unitOfwork.Object);
-
-            this._unitOfwork.Setup(mock =>
-                    mock.Repository.FirstOrDefault<InventoryProduct>(x => x.ProductId == It.IsAny<int>(), new CancellationToken()))
-                .Returns(Task.FromResult(new InventoryProduct() { Amount = 5, Id = 1, ProductId = 1, Price = 10.0 }));
-
-            this._unitOfwork.Setup(mock =>
-                    mock.Repository.FirstOrDefault<InventoryProduct>(x => x.ProductId == It.IsAny<int>(), new CancellationToken()))
-                .Returns(Task.FromResult(new InventoryProduct() { Amount = 0, Id = 2, ProductId = 2, Price = 10.0 }));
+        public async void ReturnFalse_NotAllProductsWasInStock()
+        {          
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ReturnFalse_NotAllProductsWasInStock")
+                .Options;
 
 
+            using (var context = new ApplicationDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+                unitOfWork.Repository.Add(new InventoryProduct() { Amount = 5, Id = 1, ProductId = 1, Price = 10.0 });
+                unitOfWork.Repository.Add(new InventoryProduct() {Amount = 0, Id = 2, ProductId = 2, Price = 10.0});
 
-            var result = handler.Handle(command, new CancellationToken()).Result;
-            Assert.False(result.Succes);
+                await unitOfWork.SaveChanges();
+
+                var command = new CheckInventoryCommand(new List<int>() { 1, 2 });
+
+                var handler = new CheckInventoryCommandHandler(unitOfWork);
+
+                var result = handler.Handle(command, new CancellationToken()).Result;
+                Assert.False(result.Succes);
+            }            
         }
 
         [Fact]
-        public void ReturnsFalse_NoProductsWasInStock()
-        {
-            var command = new CheckInventoryCommand(new List<int>() { 1});
+        public async void ReturnsFalse_NoProductsWasInStock()
+        {          
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ReturnsFalse_NoProductsWasInStock")
+                .Options;
 
-            var handler = new CheckInventoryCommandHandler(this._unitOfwork.Object);
+            using (var context = new ApplicationDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+                unitOfWork.Repository.Add(new InventoryProduct() { Amount = 0, Id = 1, ProductId = 1, Price = 10.0 });
+                
+                await unitOfWork.SaveChanges();
 
-            this._unitOfwork.Setup(mock =>
-                    mock.Repository.FirstOrDefault<InventoryProduct>(x => x.ProductId == It.IsAny<int>(), new CancellationToken()))
-                .Returns(Task.FromResult(new InventoryProduct() { Amount = 0, Id = 1, ProductId = 1, Price = 10.0 }));           
+                var command = new CheckInventoryCommand(new List<int>() { 1 });
 
-            var result = handler.Handle(command, new CancellationToken()).Result;
-            Assert.False(result.Succes);
+                var handler = new CheckInventoryCommandHandler(unitOfWork);
+
+                var result = handler.Handle(command, new CancellationToken()).Result;
+                Assert.False(result.Succes);
+            }
         }
 
 

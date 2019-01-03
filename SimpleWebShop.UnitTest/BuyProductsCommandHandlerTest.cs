@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using SimpleWebShop.Application.Commands.Cart;
 using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Domain.UnitOfWorks;
 using SimpleWebShop.Domain.UnitOfWorks.Repositories;
+using SimpleWebShop.Infrastruture.EFCore;
+using SimpleWebShop.Infrastruture.UnitOfWorks;
 using Xunit;
 
 namespace SimpleWebShop.UnitTest
@@ -43,14 +46,69 @@ namespace SimpleWebShop.UnitTest
             Assert.ThrowsAnyAsync<ArgumentOutOfRangeException>(() => handler.Handle(command, new CancellationToken()));
         }
 
-        public void ReturnTrue_AllInventoryProductsUpdated()
-        {
+        [Fact]
+        public async void ReturnTrue_AllInventoryProductsUpdated()
+        {           
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ReturnTrue_AllInventoryProductsUpdated")
+                .Options;
 
+            using (var context = new ApplicationDbContext(options))
+            {     
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+
+                unitOfWork.Repository.Add(new InventoryProduct() { Amount = 5, Id = 1, ProductId = 1, Price = 10.0 });
+                unitOfWork.Repository.Add(new InventoryProduct() { Amount = 5, Id = 2, ProductId = 2, Price = 10.0 });
+
+                await unitOfWork.SaveChanges();                
+            }
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+
+                var inventoryProducts = new List<InventoryProduct>()
+                {
+                    new InventoryProduct(){Amount = 4, Id = 1, ProductId = 1 , Price = 10.0},
+                    new InventoryProduct(){Amount = 4, Id = 2, ProductId = 2, Price = 10.0}
+                };
+
+                var command = new BuyProductsCommand(inventoryProducts);
+
+                var handler = new BuyProductsCommandHandler(unitOfWork);
+
+                Assert.True(handler.Handle(command, new CancellationToken()).Result);
+            }
         }
 
-        public void ReturnFalse_AnExceptionWasCought()
+        [Fact]
+        public async void ReturnFalse_AnExceptionWasCought()
         {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ReturnFalse_AnExceptionWasCought")
+                .Options;
 
+            using (var context = new ApplicationDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+
+                unitOfWork.Repository.Add(new InventoryProduct() { Amount = 5, Id = 1, ProductId = 1, Price = 10.0 });
+                unitOfWork.Repository.Add(new InventoryProduct() { Amount = 5, Id = 2, ProductId = 2, Price = 10.0 });
+
+                await unitOfWork.SaveChanges();
+
+                var inventoryProducts = new List<InventoryProduct>()
+                {
+                    new InventoryProduct(){Amount = 4, Id = 1, ProductId = 1 , Price = 10.0},
+                    new InventoryProduct(){Amount = 4, Id = 2, ProductId = 2, Price = 10.0}
+                };
+
+                var command = new BuyProductsCommand(inventoryProducts);
+
+                var handler = new BuyProductsCommandHandler(unitOfWork);
+
+                Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(command, new CancellationToken()));
+            }          
         }
     }
 }
