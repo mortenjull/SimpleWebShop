@@ -69,7 +69,7 @@ namespace SimpleWebShop.Controllers
                     Name = x.Name,
                     Price = x.Inventory.Price,
                     Picture = x.Picture,
-                    Color = x.Color.Hex
+                    Color = x.Color
                 })
             };
 
@@ -116,7 +116,7 @@ namespace SimpleWebShop.Controllers
                     Name = x.Name,
                     Price = x.Inventory.Price,
                     Picture = x.Picture,
-                    Color = x.Color.Hex
+                    Color = x.Color
                 }),
                 SortBy = model.SortBy
             };

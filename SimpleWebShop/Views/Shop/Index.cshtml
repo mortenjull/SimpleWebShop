@@ -36,15 +36,15 @@
                                 <div class="slider-range">
                                     <div data-min="@Model.DefaultMinPrice" data-max="@Model.DefaultMaxPrice" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="@Model.MinPrice" data-value-max="@Model.MaxPrice" data-label-result="Range:" data-min-input="#rangeMin" data-max-input="#rangeMax">
                                         <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" data-cy="search-min-price-slider"></span>
+                                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" data-cy="search-max-price-slider"></span>
                                     </div>
                                     <div class="range-price">Range: $ @Model.MinPrice - $ @Model.MaxPrice</div>
                                 </div>
                             </div>
 
-                            <input type="number" value="@Model.MinPrice" id="rangeMin" name="MinPrice" style="display:none;" />
-                            <input type="number" value="@Model.MaxPrice" id="rangeMax" name="MaxPrice" style="display:none;" />
+                            <input type="number" value="@Model.MinPrice" id="rangeMin" name="MinPrice" data-cy="search-min" style="display:none;" />
+                            <input type="number" value="@Model.MaxPrice" id="rangeMax" name="MaxPrice" data-cy="search-max" style="display:none;" />
                         </div>
 
                         <!-- ##### Single Widget ##### -->
@@ -58,7 +58,7 @@
                                         var color = Model.DefaultColors[i];
                                         var selected = Model.Colors.Any(x => x == color.Id);
 
-                                        <li><input type="checkbox" name="Colors" checked="@selected" value="@color.Id" /><a href="#" class="color1" style="background-color: @color.Hex;"></a></li>
+                                        <li><input type="checkbox" name="Colors" checked="@selected" value="@color.Id" data-cy="search-color"/><a href="#" class="color1" style="background-color: @color.Hex;"></a></li>
                                     }
                                 </ul>
                             </div>
@@ -67,14 +67,14 @@
                         <div class="product-sorting d-flex">
                             <p style="color: black;font-weight: 600;font-size:12px;">Sort by:</p>
                             <div style="margin-top: -10px;margin-left:10px;">
-                                <select name="sortBy" id="sortByselect">
+                                <select name="sortBy" id="sortByselect" data-cy="search-sortby">
                                     <option value="2" selected="@(Model.SortBy == SimpleWebShop.Models.Shop.ShopSearchModel.Sorting.Highest)">Price: $$ - $</option>
                                     <option value="1" selected="@(Model.SortBy == SimpleWebShop.Models.Shop.ShopSearchModel.Sorting.Lowest)">Price: $ - $$</option>
                                 </select>
                             </div>
                         </div>
 
-                        <button class="btn essence-btn" style="margin-top:30px;">Apply filter</button>
+                        <button class="btn essence-btn" data-cy="search-submit" style="margin-top:30px;">Apply filter</button>
                     </form>
 
                 </div>

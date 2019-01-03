@@ -4,11 +4,11 @@
 *@
 
 <!-- Single Product -->
-<div class="col-12 col-sm-6 col-lg-4">
+<div class="col-12 col-sm-6 col-lg-4" data-cy="search-product">
     <div class="single-product-wrapper">
         <!-- Product Image -->
         <div class="product-img">
-            <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
+            <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="" data-cy="search-product-image-display">
             <!-- Hover Thumb -->
             <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
 
@@ -19,21 +19,23 @@
             <!-- Favourite -->
             <div class="product-favourite">
                 @*<a href="#" class="favme fa fa-heart"></a>*@
-                <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color;"></a>
+                <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color.Hex;" data-cy="search-product-color-display"></a>
+                <input type="hidden" data-cy="search-product-color" value="@Model.Color.Id"/>
             </div>
         </div>
 
         <!-- Product Description -->
         <div class="product-description">
             <span>SimpleWebShop</span>
-                <h6>@Model.Name - @Model.Color</h6>
-            <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
+                <h6 data-cy="search-product-title-display">@Model.Name - @Model.Color.Hex</h6>
+            <p class="product-price" data-cy="search-product-price-display"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
+            <input type="hidden" value="@Math.Round(Model.Price, 2)" data-cy="search-product-price"/>
 
             <!-- Hover Content -->
             <div class="hover-content">
                 <!-- Add to Cart -->
                 <div class="add-to-cart-btn">
-                    <a href="#" class="btn essence-btn">Add to Cart</a>
+                    <a href="#" class="btn essence-btn" data-cy="search-product-add">Add to Cart</a>
                 </div>
             </div>
         </div>
