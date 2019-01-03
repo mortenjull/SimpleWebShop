@@ -132,12 +132,12 @@ namespace SimpleWebShop.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> BuyProducts(List<int> productIds)
-        {
+        public async Task<IActionResult> BuyProducts(int[] productIds)
+        {           
             if(!productIds.Any())
                 return new BadRequestObjectResult("You must chose some items to perchause");
 
-            var checkInventoryCommand = new CheckInventoryCommand(productIds);
+            var checkInventoryCommand = new CheckInventoryCommand(productIds.ToList());
             var inventoryResult = this._mediator.Send(checkInventoryCommand).Result;
 
             if (inventoryResult == null || !inventoryResult.Succes)

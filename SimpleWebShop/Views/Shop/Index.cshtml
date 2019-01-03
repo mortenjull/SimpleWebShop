@@ -202,18 +202,15 @@
                 $.ajax({
                     url: '/shop/BuyProducts',
                     type: 'POST',
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: "json",
-                    data: productIds,
+                    data: { productIds: productIds},
                     success: function(result) {
                         console.log("succes");
                     },
-                    error: function (result) {
+                    error: function(result) {
                         console.log("error");
-            }
-                })
-            })
-
+                    }
+                });
+            });
         });
 
 
