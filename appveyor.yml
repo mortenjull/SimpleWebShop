@@ -59,8 +59,9 @@ deploy:
   on:
     branch: development
 - provider: Environment
-    WebSite.deploy_website: true
-    WebSite.site_name: 'website.com'
-    WebSite.apppool_name: 'website'
-    WebSite.hostname: 'website.com'
-    WebSite.port: '80;80'
+  name: Local-Web-Server
+  WebSite.deploy_website: true
+  WebSite.site_name: 'website.com'
+  WebSite.apppool_name: 'website'
+  WebSite.hostname: 'website.com'
+  WebSite.port: '80;80'
