@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SimpleWebShop.Application\SimpleWebShop.Application.csproj" />
     <ProjectReference Include="..\SimpleWebShop.Domain\SimpleWebShop.Domain.csproj" />
+    <ProjectReference Include="..\SimpleWebShop.Infrastruture\SimpleWebShop.Infrastruture.csproj" />
   </ItemGroup>
 
 </Project>

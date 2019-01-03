@@ -10,23 +10,31 @@ namespace SimpleWebShop.UnitTest.Fake
     public class FakeSearchCommandRepository
     {
 
-        public async Task<IReadOnlyCollection<Color>> GetAllColors()
+        List<Color> colors = new List<Color>();
+        List<InventoryProduct> inventories = new List<InventoryProduct>();
+
+        public FakeSearchCommandRepository()
         {
-            var temp = new List<Color>();
+            colors.Add(new Color());
 
-            temp.Add(new Color() { Id = 1 });
-            temp.Add(new Color() { Id = 2 });
-            temp.Add(new Color() { Id = 3 });
+            inventories.Add(new InventoryProduct() { Price = 5000 });
 
-
-            return temp;
         }
 
-        public async Task<IReadOnlyCollection<Product>> GetAllProducts()
+
+        public IReadOnlyCollection<Color> GetAllColors()
+        {
+            return colors;
+        }
+
+        public IReadOnlyCollection<Product> GetAllProducts(List<Color> repoColors)
         {
             var temp = new List<Product>();
 
-            temp.Add(new Product());
+            foreach(var inventory in inventories)
+            {
+                temp.Add(new Product() { Inventory = inventory , ColorId = repoColors[0].Id });
+            }
 
             return temp;
         }

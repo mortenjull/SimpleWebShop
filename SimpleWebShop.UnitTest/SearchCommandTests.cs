@@ -10,42 +10,182 @@ using SimpleWebShop.Domain.UnitOfWorks;
 using SimpleWebShop.Domain.UnitOfWorks.Repositories;
 using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.UnitTest.Fake;
+using SimpleWebShop.Infrastruture.EFCore;
+using Microsoft.EntityFrameworkCore;
+using SimpleWebShop.Infrastruture.UnitOfWorks;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleWebShop.UnitTest
 {
     public class SearchCommandTests
     {
 
-        [Fact]
-        public void TestCase1_Fact_True()
+        [Theory]
+        [ClassData(typeof(TestSearchDataGeneratorValidSearch))]
+        public async Task SearchProductComandHandler_ContainsProduct_RightProduct(double minPrice, double maxPrice, List<int> colors)
+        {           
+            var option = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: "SearchProductComandHandler_ContainsProduct_RightProduct")
+            .Options;
+
+            var fakeRepository = new FakeSearchCommandRepository();
+
+            List<Color> repoColor = new List<Color>();
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                CancellationToken token = new CancellationToken();
+
+                foreach (var color in fakeRepository.GetAllColors())
+                {
+                    unitOfwork.Repository.Add<Color>(color);
+                }
+
+                await unitOfwork.SaveChanges();
+
+                repoColor = (await unitOfwork.Repository.All<Color>(token)).ToList();
+            }
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+
+                foreach (var product in fakeRepository.GetAllProducts(repoColor))
+                {
+                    unitOfwork.Repository.Add<Product>(product);
+                }
+
+                await unitOfwork.SaveChanges();
+            }
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                CancellationToken token = new CancellationToken();
+
+                var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
+
+                var searchProductHandler = new SearchProductCommandHandler(unitOfwork);
+                var results = searchProductHandler.Handle(searchProduct, token).Result;
+
+                Assert.NotEmpty(results);
+
+                if (colors.Any())
+                {
+                    foreach (var result in results)
+                    {
+                        Assert.Contains(result.ColorId, colors);
+                    }
+                }               
+
+                foreach (var result in results)
+                {
+                    Assert.True(result.Inventory.Price <= maxPrice);
+                    Assert.True(result.Inventory.Price >= minPrice);
+                }
+            }           
+        }        
+
+        [Theory]
+        [ClassData(typeof(TestSearchDataGeneratorBoundryValues))]
+        public async Task SearchProductComandHandler_BoundryValues_EmptyList(double minPrice, double maxPrice, List<int> colors)
         {
-            Assert.True(true);
+            var option = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "SearchProductComandHandler_BoundryValues_EmptyList").Options;
+
+            List<Color> repoColor = new List<Color>();
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                CancellationToken token = new CancellationToken();
+
+                foreach (var color in new FakeSearchCommandRepository().GetAllColors())
+                {
+                    unitOfwork.Repository.Add<Color>(color);
+                }
+
+                await unitOfwork.SaveChanges();
+
+                repoColor = (await unitOfwork.Repository.All<Color>(token)).ToList();
+            }
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+
+                foreach (var product in new FakeSearchCommandRepository().GetAllProducts(repoColor))
+                {
+                    unitOfwork.Repository.Add<Product>(product);
+                }
+
+                await unitOfwork.SaveChanges();
+            }
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                CancellationToken token = new CancellationToken();
+
+                var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
+
+                var searchProductHandler = new SearchProductCommandHandler(unitOfwork);
+                var results = searchProductHandler.Handle(searchProduct, token).Result;
+
+                Assert.Empty(results);
+            }
         }
 
         [Theory]
-        [ClassData(typeof(TestSearchDataGenerator))]
-        public void TestCase2_Theory_True(double minPrice, double maxPrice, List<int> colors)
+        [ClassData(typeof(TestSearchDataGeneratorInvalidColor))]
+        public async Task SearchProductComandHandler_InvalidColor_EmptyList(double minPrice, double maxPrice, List<int> colors)
         {
-            Mock<IUnitOfWork> mockUnitOfWork = new Mock<IUnitOfWork>();
-            Mock<IRepository> mockRepository = new Mock<IRepository>();
+            var option = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "SearchProductComandHandler_InvalidColor_EmptyList").Options;
 
-            CancellationToken token = new CancellationToken();
-            var expressionSpecification = new ExpSpecification<Product>(x => true );
+            List<Color> repoColor = new List<Color>();
 
-            mockRepository.Setup(x => x.All<Color>(token))
-                .Returns(new FakeSearchCommandRepository().GetAllColors());
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                CancellationToken token = new CancellationToken();
 
-            mockRepository.Setup(x => x.Where<Product>(expressionSpecification, token))
-                .Returns(new FakeSearchCommandRepository().GetAllProducts());
+                foreach (var color in new FakeSearchCommandRepository().GetAllColors())
+                {
+                    unitOfwork.Repository.Add<Color>(color);
+                }
 
-            mockUnitOfWork.Setup(x => x.Repository).Returns(mockRepository.Object);
+                await unitOfwork.SaveChanges();
 
-            var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
+                repoColor = (await unitOfwork.Repository.All<Color>(token)).ToList();
+            }
 
-            var searchProductHandler = new SearchProductCommandHandler(mockUnitOfWork.Object);
-            var list = searchProductHandler.Handle(searchProduct, token).Result;
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
 
-            Assert.NotNull(list);
+                foreach (var product in new FakeSearchCommandRepository().GetAllProducts(repoColor))
+                {
+                    unitOfwork.Repository.Add<Product>(product);
+                }
+
+                await unitOfwork.SaveChanges();
+            }
+
+            using (var contex = new ApplicationDbContext(option))
+            {
+                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                CancellationToken token = new CancellationToken();
+
+                var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
+
+                var searchProductHandler = new SearchProductCommandHandler(unitOfwork);
+                var results = searchProductHandler.Handle(searchProduct, token).Result;
+
+                Assert.Empty(results);
+            }
         }
     }
 }
