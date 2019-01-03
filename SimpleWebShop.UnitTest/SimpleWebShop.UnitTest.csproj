@@ -8,8 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleWebShop.Application\SimpleWebShop.Application.csproj" />
+    <ProjectReference Include="..\SimpleWebShop.Domain\SimpleWebShop.Domain.csproj" />
+    <ProjectReference Include="..\SimpleWebShop.Infrastruture\SimpleWebShop.Infrastruture.csproj" />
   </ItemGroup>
 
 </Project>

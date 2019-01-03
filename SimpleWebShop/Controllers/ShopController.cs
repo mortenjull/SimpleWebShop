@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SimpleWebShop.Application.Commands.Cart;
 using Microsoft.Extensions.Configuration;
 using SimpleWebShop.Application.Commands.Search;
+using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Models.Shop;
 
 namespace SimpleWebShop.Controllers
@@ -69,7 +72,9 @@ namespace SimpleWebShop.Controllers
                     Name = x.Name,
                     Price = x.Inventory.Price,
                     Picture = x.Picture,
+                    Id = x.Id,
                     Color = x.Color
+
                 })
             };
 
@@ -115,13 +120,36 @@ namespace SimpleWebShop.Controllers
                 {
                     Name = x.Name,
                     Price = x.Inventory.Price,
-                    Picture = x.Picture,
+                    Picture = x.Picture,                    
+                    Id = x.Id,                
                     Color = x.Color
                 }),
                 SortBy = model.SortBy
             };
 
             return View("Index", viewModel);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> BuyProducts(int[] productIds)
+        {           
+            if(!productIds.Any())
+                return new BadRequestObjectResult("You must chose some items to perchause");
+
+            var checkInventoryCommand = new CheckInventoryCommand(productIds.ToList());
+            var inventoryResult = await this._mediator.Send(checkInventoryCommand);
+
+            if (inventoryResult == null || !inventoryResult.Succes)
+                return new BadRequestObjectResult("Some items wher out of stock");
+
+            var buycommand = new BuyProductsCommand((List<InventoryProduct>)inventoryResult.Payload);
+            var perchauseResult = await this._mediator.Send(buycommand);
+
+            if (!perchauseResult)
+                return new BadRequestObjectResult("Something went wrong");
+
+            return new OkObjectResult("Yai");
         }
     }
 }
