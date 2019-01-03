@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SimpleWebShop.Application.Commands.Cart;
+using Microsoft.Extensions.Configuration;
 using SimpleWebShop.Application.Commands.Search;
+using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Models.Shop;
 
 namespace SimpleWebShop.Controllers
@@ -16,64 +20,136 @@ namespace SimpleWebShop.Controllers
         /// </summary>
         private readonly IMediator _mediator;
 
-        public ShopController(IMediator mediator)
+        /// <summary>
+        /// <see cref="IConfiguration"/> to use.
+        /// </summary>
+        private readonly IConfiguration _configuration;
+
+        public ShopController(IMediator mediator, IConfiguration configuration)
         {
             if (mediator == null)
                 throw new ArgumentNullException(nameof(mediator));
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
 
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
         {
-            var defaultMinPrice = 0;
-            var defaultMaxPrice = 10000;
-            var defaultColors = new List<int>() { 1 };
+            // Default price and max price.
+            var defaultMinPrice = double.Parse(_configuration["Default:MinPrice"]);
+            var defaultMaxPrice = double.Parse(_configuration["Default:MaxPrice"]);
 
+            // Get all the default colors to show on the page.
+            var defaultColors = await _mediator.Send(new SearchProductAllColorsCommand());
+            
+            // Create command for getting all products.
             var command = new SearchProductCommand(
                  defaultMinPrice,
                  defaultMaxPrice,
-                 defaultColors);
+                 defaultColors.Select(x => x.Id).ToList());
 
+            // Execute and search for produts.
             var result = await _mediator.Send(command);
 
+            // Order the result by lowest price.
+            result = result.OrderBy(x => x.Inventory.Price).ToList();
+
+            // Prepare view model for display.
             var viewModel = new ShopSearchViewModel()
             {
-                Colors = defaultColors,
+                DefaultColors = defaultColors.ToList(),
+                DefaultMinPrice = defaultMinPrice,
+                DefaultMaxPrice = defaultMaxPrice,
+
+                Colors = defaultColors.Select(x => x.Id).ToList(),
                 MaxPrice = defaultMaxPrice,
-                MinPice = defaultMinPrice,
+                MinPrice = defaultMinPrice,
                 Products = result.Select(x => new ShopSearchProductViewModel()
                 {
                     Name = x.Name,
-                    Price = x.Inventory.Price
+                    Price = x.Inventory.Price,
+                    Picture = x.Picture,
+                    Id = x.Id,
+                    Color = x.Color
+
                 })
             };
 
             return View("Index", viewModel);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Search(ShopSearchModel model)
         {
+            // Default price and max price.
+            var defaultMinPrice = double.Parse(_configuration["Default:MinPrice"]);
+            var defaultMaxPrice = double.Parse(_configuration["Default:MaxPrice"]);
+
+            // Get all the default colors to show on the page.
+            var defaultColors = await _mediator.Send(new SearchProductAllColorsCommand());
+
+            // Create command for executing searhcing for products.
             var command = new SearchProductCommand(
-                model.MinPice,
+                model.MinPrice,
                 model.MaxPrice,
                 model.Colors);
 
+            // Get the result of Search.
             var result = await _mediator.Send(command);
+            
+            // Apply sorting out from the selected sorting.
+            if (model.SortBy == ShopSearchModel.Sorting.Highest)
+                result = result.OrderByDescending(x => x.Inventory.Price).ToList();
+            else if (model.SortBy == ShopSearchModel.Sorting.Lowest)
+                result = result.OrderBy(x => x.Inventory.Price).ToList();
 
+            // Prepare view model.
             var viewModel = new ShopSearchViewModel()
             {
-                Colors = model.Colors,
+                DefaultColors = defaultColors.ToList(),
+                DefaultMinPrice = defaultMinPrice,
+                DefaultMaxPrice = defaultMaxPrice,
+
+                Colors = model.Colors ?? defaultColors.Select(x => x.Id).ToList(),
                 MaxPrice = model.MaxPrice,
-                MinPice = model.MinPice,
+                MinPrice = model.MinPrice,
                 Products = result.Select(x => new ShopSearchProductViewModel()
                 {
                     Name = x.Name,
-                    Price = x.Inventory.Price
-                })
+                    Price = x.Inventory.Price,
+                    Picture = x.Picture,                    
+                    Id = x.Id,                
+                    Color = x.Color
+                }),
+                SortBy = model.SortBy
             };
 
             return View("Index", viewModel);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> BuyProducts(int[] productIds)
+        {           
+            if(!productIds.Any())
+                return new BadRequestObjectResult("You must chose some items to perchause");
+
+            var checkInventoryCommand = new CheckInventoryCommand(productIds.ToList());
+            var inventoryResult = await this._mediator.Send(checkInventoryCommand);
+
+            if (inventoryResult == null || !inventoryResult.Succes)
+                return new BadRequestObjectResult("Some items wher out of stock");
+
+            var buycommand = new BuyProductsCommand((List<InventoryProduct>)inventoryResult.Payload);
+            var perchauseResult = await this._mediator.Send(buycommand);
+
+            if (!perchauseResult)
+                return new BadRequestObjectResult("Something went wrong");
+
+            return new OkObjectResult("Yai");
         }
     }
 }

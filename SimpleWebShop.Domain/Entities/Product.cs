@@ -26,5 +26,10 @@ namespace SimpleWebShop.Domain.Entities
         /// Inventory.
         /// </summary>
         public InventoryProduct Inventory { get; set; }
+
+        /// <summary>
+        /// Url of the picture of the <see cref="Product"/>.
+        /// </summary>
+        public string Picture { get; set; }
     }
 }

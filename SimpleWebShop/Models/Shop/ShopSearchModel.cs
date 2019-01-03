@@ -10,7 +10,7 @@ namespace SimpleWebShop.Models.Shop
         /// <summary>
         /// Minimum price for search.
         /// </summary>
-        public double MinPice { get; set; }
+        public double MinPrice { get; set; }
 
         /// <summary>
         /// Maximum price for search.
@@ -21,5 +21,19 @@ namespace SimpleWebShop.Models.Shop
         /// List of colors id's.
         /// </summary>
         public List<int> Colors { get; set; }
+
+        /// <summary>
+        /// Selected sorting type.
+        /// </summary>
+        public Sorting SortBy { get; set; } = Sorting.Lowest;
+
+        /// <summary>
+        /// Enum for sorting types.
+        /// </summary>
+        public enum Sorting
+        {
+            Highest = 2,
+            Lowest = 1
+        }
     }
 }

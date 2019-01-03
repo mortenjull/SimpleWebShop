@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="/style.css">
 
     <title>@ViewData["Title"] - SimpleWebShop</title>
-
+   
 </head>
 <body>
     <!-- ##### Header Area Start ##### -->
@@ -25,7 +25,7 @@
             <!-- Classy Menu -->
             <nav class="classy-navbar" id="essenceNav">
                 <!-- Logo -->
-                <a class="nav-brand" href="index.html"><img src="/images/core-img/logo.png" alt=""></a>
+                <a class="nav-brand" href="/"><img src="/images/core-img/logo.png" alt=""></a>
                 <!-- Navbar Toggler -->
                 <div class="classy-navbar-toggler">
                     <span class="navbarToggler"><span></span><span></span><span></span></span>
@@ -39,8 +39,8 @@
                     <!-- Nav Start -->
                     <div class="classynav">
                         <ul>
-                            <li><a href="/">Home</a></li>
-                            <li><a href="/shop">Shop</a></li>
+                            <li><a href="/" data-cy="navigation-home">Home</a></li>
+                            <li><a href="/shop" data-cy="navigation-shop">Shop</a></li>
                         </ul>
                     </div>
                     <!-- Nav End -->
@@ -52,7 +52,7 @@
 
                 <!-- Cart Area -->
                 <div class="cart-area">
-                    <a href="#" id="essenceCartBtn"><img src="/images/core-img/bag.svg" alt=""> <span>3</span></a>
+                    <a href="#" id="essenceCartBtn"><img src="/images/core-img/bag.svg" alt=""> <span></span></a>
                 </div>
             </div>
 
@@ -66,14 +66,14 @@
 
         <!-- Cart Button -->
         <div class="cart-button">
-            <a href="#" id="rightSideCart"><img src="/images/core-img/bag.svg" alt=""> <span>3</span></a>
+            <a href="#" id="rightSideCart"><img src="/images/core-img/bag.svg" alt=""> <span></span></a>
         </div>
 
         <div class="cart-content d-flex">
-
+<!-------------------------------List of products at checkout.----------------------------------------------------------->
             <!-- Cart List Area -->
             <div class="cart-list">
-                <!-- Single Cart Item -->
+                @*<!-- Single Cart Item -->
                 <div class="single-cart-item">
                     <a href="#" class="product-image">
                         <img src="/images/product-img/product-1.jpg" class="cart-thumb" alt="">
@@ -119,21 +119,20 @@
                             <p class="price">$45.00</p>
                         </div>
                     </a>
-                </div>
+                </div>*@
             </div>
 
             <!-- Cart Summary -->
             <div class="cart-amount-summary">
 
-                <h2>Summary</h2>
-                <ul class="summary-table">
-                    <li><span>subtotal:</span> <span>$274.00</span></li>
-                    <li><span>delivery:</span> <span>Free</span></li>
-                    <li><span>discount:</span> <span>-15%</span></li>
-                    <li><span>total:</span> <span>$232.00</span></li>
-                </ul>
+                <h2>Summary</h2>                              
+                <div>Total:</div>
+                <div class="cartTotal">0</div>
+                <div>Items:</div>
+                <div class="cartitems">0</div>
+
                 <div class="checkout-btn mt-100">
-                    <a href="checkout.html" class="btn essence-btn">check out</a>
+                    <a href="Shop" class="btn essence-btn cartCheckOut">check out</a>
                 </div>
             </div>
         </div>
@@ -180,10 +179,6 @@
         </div>
     </footer>
     <!-- ##### Footer Area End ##### -->
-
-
-    @RenderSection("Scripts", required: false)
-
     <!-- jQuery (Necessary for All JavaScript Plugins) -->
     <script src="/js/jquery/jquery-2.2.4.min.js"></script>
     <!-- Popper js -->
@@ -196,5 +191,7 @@
     <script src="/js/classy-nav.min.js"></script>
     <!-- Active js -->
     <script src="/js/active.js"></script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
