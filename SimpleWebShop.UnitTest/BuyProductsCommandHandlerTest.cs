@@ -107,7 +107,7 @@ namespace SimpleWebShop.UnitTest
 
                 var handler = new BuyProductsCommandHandler(unitOfWork);
 
-                Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(command, new CancellationToken()));
+                await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(command, new CancellationToken()));
             }          
         }
     }
