@@ -59,7 +59,6 @@ deploy:
   on:
     branch: development
 - provider: Environment
-    name: Local-Web-Server
     WebSite.deploy_website: true
     WebSite.site_name: 'website.com'
     WebSite.apppool_name: 'website'
