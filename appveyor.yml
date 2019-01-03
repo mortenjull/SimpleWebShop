@@ -22,7 +22,7 @@ build:
 after_build:
 - cmd: dotnet publish -c Release
 test_script:
-  - cmd: %%xunit20%\xunit.console.x86 "C:\projects\simplewebshop\SimpleWebShop.SpecFlow\bin\Debug\SimpleWebShop.Specflow.dll" -appveyor
+  - '%xunit20%\xunit.console.x86 "C:\projects\simplewebshop\SimpleWebShop.SpecFlow\bin\Debug\SimpleWebShop.Specflow.dll" -appveyor'
   - dotnet test "C:\projects\simplewebshop\SimpleWebShop.UnitTest\SimpleWebShop.UnitTest.csproj" --configuration Debug --no-build
   - cd SimpleWebShop.Cypress
   - npx cypress version
