@@ -184,7 +184,8 @@
                 var fTotal = parseFloat(total);
                 var fprice = parseFloat(price);
                 fTotal += fprice;
-                total = fTotal;
+                total = `${fTotal.toFixed(2)} $`;
+                
 
                 var fItems = parseFloat(items);
                 fItems ++;
@@ -202,7 +203,7 @@
                 $.ajax({
                     url: '/shop/BuyProducts',
                     type: 'POST',
-                    data: { productIds: productIds},
+                    data: { productIds: productIds },
                     success: function(result) {
                         console.log("succes");
                     },
