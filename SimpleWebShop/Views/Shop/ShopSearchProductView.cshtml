@@ -4,31 +4,31 @@
 *@
 
 <!-- Single Product -->
-<div class="col-12 col-sm-6 col-lg-4">
-    <form action="#" method="post" class="productForm">
-        <div class="single-product-wrapper">
-            <!-- Product Image -->
-            <div class="product-img">
-                <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
-                <!-- Hover Thumb -->
-                <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
+<div class="col-12 col-sm-6 col-lg-4" data-cy="search-product">
+  <form action="#" method="post" class="productForm">
+    <div class="single-product-wrapper">
+        <!-- Product Image -->
+        <div class="product-img">
+            <img src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="" data-cy="search-product-image-display">
+            <!-- Hover Thumb -->
+            <img class="hover-img" src="@string.Format("/images/product-img/{0}", Model.Picture)" alt="">
 
-                <!-- Product Badge -->
-                @*<div class="product-badge offer-badge">
-                    <span>-30%</span>
-                </div>*@
-                <!-- Favourite -->
-                <div class="product-favourite">
-                    @*<a href="#" class="favme fa fa-heart"></a>*@
-                    <a href="#" class="" style="opacity: 1; visibility: visible; background-color: @Model.Color;"></a>
-                </div>
+            <!-- Product Badge -->
+            @*<div class="product-badge offer-badge">
+                <span>-30%</span>
+            </div>*@
+            <!-- Favourite -->
+            <div class="product-favourite">
+                @*<a href="#" class="favme fa fa-heart"></a>*@
+                <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color.Hex;" data-cy="search-product-color-display"></a>
+                <input type="hidden" data-cy="search-product-color" value="@Model.Color.Id"/>
             </div>
 
             <!-- Product Description -->
             <div class="product-description">
                 <span>SimpleWebShop</span>
-                <h6>@Model.Name - @Model.Color</h6>
-                <p class="product-price"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
+                <h6 data-cy="search-product-title-display">@Model.Name - @Model.Color.Hex</h6>
+                <p class="product-price" data-cy="search-product-price-display"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
 
                 <!-- Hover Content -->
                 <div class="hover-content">
@@ -37,9 +37,11 @@
                         <input type="hidden" class="productId" name="productId" value="@Model.Id" />
                         <input type="hidden" class="productPrice" name="productPrice" value="@Model.Price" />
                         <input type="hidden" class="productPicture" name="productPicture" value="@Model.Picture" />
-                        <input type="submit" class="btn essence-btn" value="Add to Cart" />
+                        <input type="submit" class="btn essence-btn" value="Add to Cart" data-cy="search-product-add" />
+                        <input type="hidden" value="@Math.Round(Model.Price, 2)" data-cy="search-product-price"/>
                         <!--<a href="#" class="btn essence-btn">Add to Cart</a>-->
                     </div>
+
                 </div>
             </div>
         </div>
