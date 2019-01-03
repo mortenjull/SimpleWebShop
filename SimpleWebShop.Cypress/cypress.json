@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://localhost:44307",
+  "baseUrl": "http://website.com",
 
   "$defaultProductsCount": 20
 }

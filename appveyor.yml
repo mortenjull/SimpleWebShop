@@ -27,8 +27,7 @@ test_script:
   - cd SimpleWebShop.Cypress
   - npx cypress version
   - npx cypress verify
-  - ps: $ServerProcess = Start-Process dotnet -ArgumentList "SimpleWebShop\bin\Release\netcoreapp2.1\publish\SimpleWebShop.dll" -PassThru
-  - npm run cypress:run --record
+  - npm run-script run
   - cd ../
 artifacts:
 - path: '\SimpleWebShop\bin\Release\netcoreapp2.1\publish'
@@ -59,5 +58,11 @@ deploy:
   aspnet_core_force_restart: true
   on:
     branch: development
-on_finish:
-- ps: Stop-Process -Id $ServerProcess.Id
+deploy:
+  - provider: Environment
+    name: Local-Web-Server
+    WebSite.deploy_website: true
+    WebSite.site_name: 'website.com'
+    WebSite.apppool_name: 'website'
+    WebSite.hostname: 'website.com'
+    WebSite.port: '80;80'
