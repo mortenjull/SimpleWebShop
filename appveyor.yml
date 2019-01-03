@@ -58,8 +58,7 @@ deploy:
   aspnet_core_force_restart: true
   on:
     branch: development
-deploy:
-  - provider: Environment
+- provider: Environment
     name: Local-Web-Server
     WebSite.deploy_website: true
     WebSite.site_name: 'website.com'
