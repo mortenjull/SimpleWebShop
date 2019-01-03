@@ -23,7 +23,7 @@
                   <a href="#" class="" style="opacity: 1;visibility: visible;background-color:@Model.Color.Hex;" data-cy="search-product-color-display"></a>
                   <input type="hidden" data-cy="search-product-color" value="@Model.Color.Id" />
               </div>
-
+          </div>
               <!-- Product Description -->
               <div class="product-description">
                   <span>SimpleWebShop</span>
@@ -31,20 +31,20 @@
                   <p class="product-price" data-cy="search-product-price-display"> @string.Format("${0}", Math.Round(Model.Price, 2))</p>
 
                   <!-- Hover Content -->
+                  <input type="hidden" class="productId" name="productId" value="@Model.Id" />
+                  <input type="hidden" class="productPrice" name="productPrice" value="@Model.Price" />
+                  <input type="hidden" class="productPicture" name="productPicture" value="@Model.Picture" />
+                  <input type="hidden" value="@Math.Round(Model.Price, 2)" data-cy="search-product-price" />
+
                   <div class="hover-content">
                       <!-- Add to Cart -->
-                      <div class="add-to-cart-btn">
-                          <input type="hidden" class="productId" name="productId" value="@Model.Id" />
-                          <input type="hidden" class="productPrice" name="productPrice" value="@Model.Price" />
-                          <input type="hidden" class="productPicture" name="productPicture" value="@Model.Picture" />
+                      <div class="add-to-cart-btn">                     
                           <input type="submit" class="btn essence-btn" value="Add to Cart" data-cy="search-product-add" />
-                          <input type="hidden" value="@Math.Round(Model.Price, 2)" data-cy="search-product-price" />
                           <!--<a href="#" class="btn essence-btn">Add to Cart</a>-->
                       </div>
 
                   </div>
               </div>
-          </div>
-      </div>
+          </div>     
     </form>
 </div>
