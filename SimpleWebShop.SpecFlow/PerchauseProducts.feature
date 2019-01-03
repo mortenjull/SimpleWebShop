@@ -4,13 +4,11 @@
 	I want to be told the sum of two numbers
 
 @mytag
-Scenario: Buy a product
-	Given I have added item <item> into the Cart
-	And I want this amount <amount>
-	And   The shop have product <product> in  stock<stock>
-	When  i press Perchause
-	Then  the result should be succes:<succes>.
-
+Scenario Outline: Buy a product
+	Given I have added item <item> into the Cart and I want this amount <amount>
+	And The shop have product <product> in  stock<stock>
+	When i press Perchause
+	Then the result should be succes <succes>
 
 	Examples: 
 	| item | amount | product | stock | succes |

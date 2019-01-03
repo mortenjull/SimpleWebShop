@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using SimpleWebShop.Application.Commands.Cart;
 using SimpleWebShop.Domain.Entities;
 using SimpleWebShop.Domain.UnitOfWorks;
 using SimpleWebShop.Domain.UnitOfWorks.Repositories;
 using SimpleWebShop.Shared;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Xunit;
+using MediatR;
 
 namespace SimpleWebShop.Specflow
 {
@@ -21,51 +22,48 @@ namespace SimpleWebShop.Specflow
 
         int _itemId;
 
-        private CheckInventoryCommand _checkInventory;
+        CheckInventoryCommand _checkInventory;
         private CheckInventoryCommandHandler _checkHandler;
         private ResultObject result;
 
-        //Given I have the item with * id
-        [Given(@"I have added item (.*) into the Cart")]
-        public void GivenIHaveAddedItemIntoTheCart(string p0)
+        [Given(@"I have added item (.*) into the Cart and I want this amount (.*)")]
+        public void GivenIHaveAddedItemIntoTheCartAndIWantThisAmount(int p0, int p1)
         {
-            _itemId = Int32.Parse(p0);
-        }
+            _itemId = p0;
 
-        //I want to have * amount of set item
-        [Given(@"I want this amount (.*)")]
-        public void GivenIWantThisAmount(string p0)
-        {
             var tempList = new List<int>();
-            for (int i = 0; i < Int32.Parse(p0); i++)
+            for (int i = 0; i < p1; i++)
             {
                 tempList.Add(_itemId);
             }
 
             _checkInventory = new CheckInventoryCommand(tempList);
         }
-
+        
         [Given(@"The shop have product (.*) in  stock(.*)")]
-        public void GivenTheShopHaveProductInStock(string p0, string p1)
+        public void GivenTheShopHaveProductInStock(int p0, int p1)
         {
-            SetupMock(Int32.Parse(p0), Int32.Parse(p1));
+            SetupMock(p0, p1);
         }
-
+        
         [When(@"i press Perchause")]
-        public async void WhenIPressPerchause()
+        public async Task WhenIPressPerchauseAsync()
         {
             CancellationToken handleToken = new CancellationToken();
 
             _checkHandler = new CheckInventoryCommandHandler(unitOfWorkMock.Object);
             result = await _checkHandler.Handle(_checkInventory, handleToken);
         }
-
-        [Then(@"the result should be succes:(.*)\.")]
-        public void ThenTheResultShouldBeSucces_(string p0)
+        
+        [Then(@"the result should be succes (.*)")]
+        public void ThenTheResultShouldBeSuccesTrue(string succes)
         {
-            Assert.Equal(Boolean.Parse(p0), result.Succes);
+            bool expected = Boolean.Parse(succes);
+
+            Assert.Equal(expected, result.Succes);
         }
-        public void SetupMock(int id, int amount)
+
+        public async void SetupMock(int id, int amount)
         {
             CancellationToken cancellationToken = new CancellationToken();
 
