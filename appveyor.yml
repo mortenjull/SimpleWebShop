@@ -2,6 +2,8 @@ version: 1.0.{build}
 image: Visual Studio 2017
 environment:
   nodejs_version: 10
+  CYPRESS_RECORD_KEY:
+    secure: 4J8SgtCJT3m9r04Ptc70RbwRi8EB+H2fxfYRwfJceO25qs1KKA6Ppn/bdnKvpzHE
 install:
 - ps: Install-Product node $env:nodejs_version
 - node --version
@@ -32,7 +34,7 @@ test_script:
   - ps: $ServerProcess = Start-Process dotnet -ArgumentList "run","--urls=http://localhost:5001/" -PassThru
   - ps: cd ../
   - cd SimpleWebShop.Cypress
-  - npm run-script run
+  - ./node_modules/.bin/cypress run --record
   - cd ../
 artifacts:
 - path: '\SimpleWebShop\bin\Release\netcoreapp2.1\publish'
