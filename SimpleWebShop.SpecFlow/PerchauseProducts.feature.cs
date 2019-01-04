@@ -17,17 +17,17 @@ namespace SimpleWebShop.Specflow
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class NumberInRangeFeature : Xunit.IClassFixture<NumberInRangeFeature.FixtureData>, System.IDisposable
+    public partial class PerchauseProductsFeature : Xunit.IClassFixture<PerchauseProductsFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "NumberInRange.feature"
+#line 1 "PerchauseProducts.feature"
 #line hidden
         
-        public NumberInRangeFeature(NumberInRangeFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public PerchauseProductsFeature(PerchauseProductsFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -36,7 +36,7 @@ namespace SimpleWebShop.Specflow
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "NumberInRange", "\tIn order to avoid silly mistakes\r\n\tAs a math idiot\r\n\tI want to be told the sum o" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "PerchauseProducts", "\tIn order to avoid silly mistakes\r\n\tAs a math idiot\r\n\tI want to be told the sum o" +
                     "f two numbers", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -77,24 +77,34 @@ namespace SimpleWebShop.Specflow
             this.ScenarioTearDown();
         }
         
-        [Xunit.TheoryAttribute(DisplayName="Add two numbers")]
-        [Xunit.TraitAttribute("FeatureTitle", "NumberInRange")]
-        [Xunit.TraitAttribute("Description", "Add two numbers")]
-        [Xunit.InlineDataAttribute("50", "70", "120", new string[0])]
-        public virtual void AddTwoNumbers(string numberOne, string numberTwo, string result, string[] exampleTags)
+        [Xunit.TheoryAttribute(DisplayName="Buy a product")]
+        [Xunit.TraitAttribute("FeatureTitle", "PerchauseProducts")]
+        [Xunit.TraitAttribute("Description", "Buy a product")]
+        [Xunit.TraitAttribute("Category", "mytag")]
+        [Xunit.InlineDataAttribute("1", "1", "1", "1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("1", "1", "1", "0", "false", new string[0])]
+        [Xunit.InlineDataAttribute("1", "2", "1", "1", "false", new string[0])]
+        [Xunit.InlineDataAttribute("1", "1", "1", "5", "true", new string[0])]
+        public virtual void BuyAProduct(string item, string amount, string product, string stock, string succes, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add two numbers", null, exampleTags);
-#line 6
+            string[] @__tags = new string[] {
+                    "mytag"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Buy a product", null, @__tags);
+#line 7
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 7
- testRunner.Given(string.Format("I have entered {0} into the calculator", numberOne), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 8
- testRunner.And(string.Format("I have entered {0} into the calculator", numberTwo), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given(string.Format("I have added item {0} into the Cart and I want this amount {1}", item, amount), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 9
- testRunner.When("I press add", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And(string.Format("The shop have product {0} in  stock{1}", product, stock), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 10
- testRunner.Then(string.Format("the result should be {0} on the screen", result), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.When("i press Perchause", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 11
+ testRunner.Then(string.Format("the result should be succes {0}", succes), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -106,12 +116,12 @@ this.ScenarioInitialize(scenarioInfo);
             
             public FixtureData()
             {
-                NumberInRangeFeature.FeatureSetup();
+                PerchauseProductsFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                NumberInRangeFeature.FeatureTearDown();
+                PerchauseProductsFeature.FeatureTearDown();
             }
         }
     }
