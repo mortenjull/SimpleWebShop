@@ -1,0 +1,70 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+environment:
+  nodejs_version: 10
+  CYPRESS_RECORD_KEY:
+    secure: 4J8SgtCJT3m9r04Ptc70RbwRi8EB+H2fxfYRwfJceO25qs1KKA6Ppn/bdnKvpzHE
+install:
+- ps: Install-Product node $env:nodejs_version
+- node --version
+- npm --version
+- cd SimpleWebShop.Cypress
+- npm ci
+- npx cypress cache path
+- cd ../
+cache:
+  # cache NPM packages and Cypress binary
+  - '%AppData%\npm'
+  - '%USERPROFILE%\AppData\Local\Cypress\Cache'
+before_build:
+- ps: dotnet restore --verbosity m
+- ps: nuget restore
+build:
+  verbosity: minimal
+after_build:
+- cmd: dotnet publish -c Release
+test_script:
+  - '%xunit20%\xunit.console.x86 "C:\projects\simplewebshop\SimpleWebShop.SpecFlow\bin\Debug\SimpleWebShop.Specflow.dll" -appveyor'
+  - dotnet test "C:\projects\simplewebshop\SimpleWebShop.UnitTest\SimpleWebShop.UnitTest.csproj" --configuration Debug --no-build
+  - cd SimpleWebShop.Cypress
+  - npx cypress version
+  - npx cypress verify
+  - cd ../
+  - ps: cd SimpleWebShop
+  - ps: $ServerProcess = Start-Process dotnet -ArgumentList "run","--urls=http://localhost:5001/" -PassThru
+  - ps: cd ../
+  - cd SimpleWebShop.Cypress
+  - if defined CYPRESS_RECORD_KEY (npm run-script record)
+  - if not defined CYPRESS_RECORD_KEY (npm run-script run)
+  - cd ../
+artifacts:
+- path: '\SimpleWebShop\bin\Release\netcoreapp2.1\publish'
+  name: WebSite
+  type: WebDeployPackage
+deploy:
+- provider: WebDeploy
+  server: https://simplewebshop.scm.azurewebsites.net:443/msdeploy.axd?site=SimpleWebShop
+  website: SimpleWebShop
+  username: $SimpleWebShop
+  password:
+    secure: vcVTXii1urmVdaoFfEKQi9zksejffKXQhN0fs8/oS3T3sEQ1IjZSgJh2AdgYui7kvah5pWhBLMmt2PoC2JN7Og==
+  artifact: WebSite
+  aspnet_core: true
+  app_offline: true
+  aspnet_core_force_restart: true
+  on:
+    branch: master
+- provider: WebDeploy
+  server: https://simplewebshop-staging.scm.azurewebsites.net:443/msdeploy.axd?site=SimpleWebShop-Staging
+  website: SimpleWebShop-Staging
+  username: $SimpleWebShop-Staging
+  password:
+    secure: QcxvOmLwh71Yr2SN3OvbntNYN3IOeuXi0ZZOiw7jGUsXnyPvo4xZXKcYVM9yd4DG42gbHUpJf/GdKzN4jdpctg==
+  artifact: WebSite
+  aspnet_core: true
+  app_offline: true
+  aspnet_core_force_restart: true
+  on:
+    branch: development
+on_finish:
+  - ps: $ServerProcess.closeMainWindow()
