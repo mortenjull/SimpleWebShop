@@ -1,1 +1,5 @@
-{}
+{
+  "baseUrl": "http://localhost:5001",
+  "$defaultProductsCount": 20,
+  "projectId": "oxu2ie"
+}

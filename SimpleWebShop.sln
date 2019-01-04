@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWebShop.Domain", "Sim
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWebShop.UnitTest", "SimpleWebShop.UnitTest\SimpleWebShop.UnitTest.csproj", "{1D482D91-58C4-43B2-A705-00FD29EB06E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebShop.Application", "SimpleWebShop.Application\SimpleWebShop.Application.csproj", "{6251CAFA-FEBD-4850-B70B-BDDB77270FC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWebShop.Application", "SimpleWebShop.Application\SimpleWebShop.Application.csproj", "{6251CAFA-FEBD-4850-B70B-BDDB77270FC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebShop.Specflow", "SimpleWebShop.Specflow\SimpleWebShop.Specflow.csproj", "{650AC4B9-047A-4204-8858-63EC05C019FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6251CAFA-FEBD-4850-B70B-BDDB77270FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6251CAFA-FEBD-4850-B70B-BDDB77270FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6251CAFA-FEBD-4850-B70B-BDDB77270FC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{650AC4B9-047A-4204-8858-63EC05C019FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650AC4B9-047A-4204-8858-63EC05C019FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650AC4B9-047A-4204-8858-63EC05C019FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650AC4B9-047A-4204-8858-63EC05C019FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,3 +23,14 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('move', { prevSubject: 'element'}, (subject, options) => { 
+    // Invoke the jquery function offset for getting the
+    // offset of the element in the DOM.
+    cy.wrap(subject).invoke('offset').then(offset => {
+        cy.wrap(subject)
+            .trigger('mousedown', { which: 1, pageX: offset.left, pageY: offset.top })
+            .trigger('mousemove', { which: 1, pageX:  offset.left + options.left, pageY:  offset.top })
+            .trigger('mouseup');
+    });
+});
