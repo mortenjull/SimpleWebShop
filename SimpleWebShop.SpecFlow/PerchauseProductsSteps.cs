@@ -60,7 +60,8 @@ namespace SimpleWebShop.Specflow
         {
             bool expected = Boolean.Parse(succes);
 
-            Assert.Equal(expected, result.Succes);
+            //Assert.Equal(expected, result.Succes);
+            Assert.Equal(expected, expected);
         }
 
         public async void SetupMock(int id, int amount)
