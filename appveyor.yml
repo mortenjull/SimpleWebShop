@@ -34,7 +34,8 @@ test_script:
   - ps: $ServerProcess = Start-Process dotnet -ArgumentList "run","--urls=http://localhost:5001/" -PassThru
   - ps: cd ../
   - cd SimpleWebShop.Cypress
-  - ./node_modules/.bin/cypress run --record
+  - if defined CYPRESS_RECORD_KEY (./node_modules/.bin/cypress run --record)
+  - if not defined CYPRESS_RECORD_KEY (./node_modules/.bin/cypress run)
   - cd ../
 artifacts:
 - path: '\SimpleWebShop\bin\Release\netcoreapp2.1\publish'
