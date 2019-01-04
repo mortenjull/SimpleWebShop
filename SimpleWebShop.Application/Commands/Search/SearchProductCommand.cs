@@ -4,7 +4,6 @@ using SimpleWebShop.Domain.UnitOfWorks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,8 +56,8 @@ namespace SimpleWebShop.Application.Commands.Search
             // Create filter expression for finding products which is
             // valid under the given criteria.
             var expressionSpecification = new ExpSpecification<Product>(x =>
-                x.Inventory.Price > request.MinPrice &&
-                x.Inventory.Price < request.MaxPrice &&
+                x.Inventory.Price >= request.MinPrice &&
+                x.Inventory.Price <= request.MaxPrice &&
                 colors.Contains(x.ColorId));
 
             // What to include.
