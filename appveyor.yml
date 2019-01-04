@@ -27,6 +27,7 @@ test_script:
   - cd SimpleWebShop.Cypress
   - npx cypress version
   - npx cypress verify
+  - ps: $ServerProcess = Start-Process dotnet -ArgumentList "run","--urls=http://localhost:5001/" -PassThru
   - npm run-script run
   - cd ../
 artifacts:
@@ -58,10 +59,5 @@ deploy:
   aspnet_core_force_restart: true
   on:
     branch: development
-- provider: Environment
-  name: Local-Web-Server
-  WebSite.deploy_website: true
-  WebSite.site_name: 'website.com'
-  WebSite.apppool_name: 'website'
-  WebSite.hostname: 'website.com'
-  WebSite.port: '80;80'
+on_finish:
+  - ps: $ServerProcess.closeMainWindow()
