@@ -27,7 +27,11 @@ test_script:
   - cd SimpleWebShop.Cypress
   - npx cypress version
   - npx cypress verify
+  - cd ../
+  - ps: cd SimpleWebShop
   - ps: $ServerProcess = Start-Process dotnet -ArgumentList "run","--urls=http://localhost:5001/" -PassThru
+  - ps: cd ../
+  - cd SimpleWebShop.Cypress
   - npm run-script run
   - cd ../
 artifacts:
