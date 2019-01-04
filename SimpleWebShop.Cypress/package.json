@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/cypress open",
-    "run": "./node_modules/.bin/cypress run"
+    "run": "./node_modules/.bin/cypress run",
+    "record": "./node_modules/.bin/cypress run --record"
   },
   "author": "TMN",
   "license": "ISC",
