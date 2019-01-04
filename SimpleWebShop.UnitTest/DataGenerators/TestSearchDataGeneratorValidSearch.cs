@@ -12,6 +12,9 @@ namespace SimpleWebShop.UnitTest.DataGenerators
         {           
             new object[] { 0, 10000, new List<int>(){} },          
             new object[] { 5000, 5000, new List<int>(){} },
+
+            new object[] { 0, 10000, new List<int>(){1} },
+            new object[] { 5000, 5000, new List<int>(){1} },
         };
 
         public IEnumerator<object[]> GetEnumerator()

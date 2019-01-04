@@ -28,161 +28,105 @@ namespace SimpleWebShop.UnitTest
             var option = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: "SearchProductComandHandler_ContainsProduct_RightProduct")
             .Options;
-
-            var fakeRepository = new FakeSearchCommandRepository();
-
-            List<Color> repoColor = new List<Color>();
-
-            using (var contex = new ApplicationDbContext(option))
+            
+            using (var context = new ApplicationDbContext(option))
             {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-                CancellationToken token = new CancellationToken();
+                // Clear the in memory database.
+                context.Database.EnsureDeleted();
 
-                foreach (var color in fakeRepository.GetAllColors())
+                // Create unit of work for populating data.
+                IUnitOfWork unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+
+                // Add color.
+                var color = unitOfWork.Repository.Add(new Color() { Id = 1 });
+
+                // Add product.
+                var product = unitOfWork.Repository.Add(new Product()
                 {
-                    unitOfwork.Repository.Add<Color>(color);
-                }
+                    ColorId = color.Id,
+                    Inventory = new InventoryProduct() { Price = 5000 }
+                });
 
-                await unitOfwork.SaveChanges();
-
-                repoColor = (await unitOfwork.Repository.All<Color>(token)).ToList();
+                // Save changes.
+                await unitOfWork.SaveChanges();
             }
 
             using (var contex = new ApplicationDbContext(option))
             {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                // Crete unit of work to use in testing.
+                IUnitOfWork unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
 
-                foreach (var product in fakeRepository.GetAllProducts(repoColor))
-                {
-                    unitOfwork.Repository.Add<Product>(product);
-                }
+                // Source for cancelation.
+                CancellationTokenSource source = new CancellationTokenSource();
 
-                await unitOfwork.SaveChanges();
-            }
+                // Command to execute.
+                var command = new SearchProductCommand(minPrice, maxPrice, colors);
 
-            using (var contex = new ApplicationDbContext(option))
-            {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-                CancellationToken token = new CancellationToken();
+                // Handler to test.
+                var handler = new SearchProductCommandHandler(unitOfwork);
 
-                var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
+                // Test handler.
+                var results = await handler.Handle(command, source.Token);
 
-                var searchProductHandler = new SearchProductCommandHandler(unitOfwork);
-                var results = searchProductHandler.Handle(searchProduct, token).Result;
-
+                // Check if list is empty.
                 Assert.NotEmpty(results);
-
-                if (colors.Any())
-                {
-                    foreach (var result in results)
-                    {
-                        Assert.Contains(result.ColorId, colors);
-                    }
-                }               
 
                 foreach (var result in results)
                 {
-                    Assert.True(result.Inventory.Price <= maxPrice);
-                    Assert.True(result.Inventory.Price >= minPrice);
+                    if (colors.Any())
+                        Assert.Contains(result.ColorId, colors);
+
+                    Assert.True(result.Inventory.Price <= maxPrice && result.Inventory.Price >= minPrice);
                 }
             }           
         }        
 
         [Theory]
+        [ClassData(typeof(TestSearchDataGeneratorInvalidColor))]
         [ClassData(typeof(TestSearchDataGeneratorBoundryValues))]
         public async Task SearchProductComandHandler_BoundryValues_EmptyList(double minPrice, double maxPrice, List<int> colors)
         {
             var option = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "SearchProductComandHandler_BoundryValues_EmptyList").Options;
 
-            List<Color> repoColor = new List<Color>();
-
-            using (var contex = new ApplicationDbContext(option))
+            using (var context = new ApplicationDbContext(option))
             {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-                CancellationToken token = new CancellationToken();
+                // Clear the in memory database.
+                context.Database.EnsureDeleted();
 
-                foreach (var color in new FakeSearchCommandRepository().GetAllColors())
+                // Create unit of work for populating data.
+                IUnitOfWork unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+
+                // Add color.
+                var color = unitOfWork.Repository.Add(new Color() { Id = 1 });
+
+                // Add product.
+                var product = unitOfWork.Repository.Add(new Product()
                 {
-                    unitOfwork.Repository.Add<Color>(color);
-                }
+                    ColorId = color.Id,
+                    Inventory = new InventoryProduct() { Price = 5000 }
+                });
 
-                await unitOfwork.SaveChanges();
-
-                repoColor = (await unitOfwork.Repository.All<Color>(token)).ToList();
+                // Save changes.
+                await unitOfWork.SaveChanges();
             }
 
             using (var contex = new ApplicationDbContext(option))
             {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
+                // Crete unit of work to use in testing.
+                IUnitOfWork unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
 
-                foreach (var product in new FakeSearchCommandRepository().GetAllProducts(repoColor))
-                {
-                    unitOfwork.Repository.Add<Product>(product);
-                }
+                // Source for cancelation.
+                CancellationTokenSource source = new CancellationTokenSource();
 
-                await unitOfwork.SaveChanges();
-            }
+                // Command to execute.
+                var command = new SearchProductCommand(minPrice, maxPrice, colors);
 
-            using (var contex = new ApplicationDbContext(option))
-            {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-                CancellationToken token = new CancellationToken();
+                // Handler to test.
+                var handler = new SearchProductCommandHandler(unitOfwork);
 
-                var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
-
-                var searchProductHandler = new SearchProductCommandHandler(unitOfwork);
-                var results = searchProductHandler.Handle(searchProduct, token).Result;
-
-                Assert.Empty(results);
-            }
-        }
-
-        [Theory]
-        [ClassData(typeof(TestSearchDataGeneratorInvalidColor))]
-        public async Task SearchProductComandHandler_InvalidColor_EmptyList(double minPrice, double maxPrice, List<int> colors)
-        {
-            var option = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "SearchProductComandHandler_InvalidColor_EmptyList").Options;
-
-            List<Color> repoColor = new List<Color>();
-
-            using (var contex = new ApplicationDbContext(option))
-            {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-                CancellationToken token = new CancellationToken();
-
-                foreach (var color in new FakeSearchCommandRepository().GetAllColors())
-                {
-                    unitOfwork.Repository.Add<Color>(color);
-                }
-
-                await unitOfwork.SaveChanges();
-
-                repoColor = (await unitOfwork.Repository.All<Color>(token)).ToList();
-            }
-
-            using (var contex = new ApplicationDbContext(option))
-            {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-
-                foreach (var product in new FakeSearchCommandRepository().GetAllProducts(repoColor))
-                {
-                    unitOfwork.Repository.Add<Product>(product);
-                }
-
-                await unitOfwork.SaveChanges();
-            }
-
-            using (var contex = new ApplicationDbContext(option))
-            {
-                var unitOfwork = new UnitOfWork<ApplicationDbContext>(contex);
-                CancellationToken token = new CancellationToken();
-
-                var searchProduct = new SearchProductCommand(minPrice, maxPrice, colors);
-
-                var searchProductHandler = new SearchProductCommandHandler(unitOfwork);
-                var results = searchProductHandler.Handle(searchProduct, token).Result;
+                // Test handler.
+                var results = await handler.Handle(command, source.Token);
 
                 Assert.Empty(results);
             }
